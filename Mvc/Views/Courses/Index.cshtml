@@ -1,0 +1,97 @@
+﻿@using X.PagedList @* //import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic) *@
+@using X.PagedList.Mvc.Core @* //import this so we get our HTML Helper *@
+@model IEnumerable<Mvc.Models.Course>
+
+@{
+    // 可以在每個 View 裡面指定要用哪個 Layout
+    // 也可以用 _ViewStart.cshtml 來指定某個 Controller 下的所有 View 都用哪個 Layout
+    // Layout = "_Layout222";
+    ViewData["Title"] = "IndexX";
+}
+
+<link href="~/css/PagedList.css" rel="stylesheet" />
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Credits)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Department.Name)
+        </th>
+        <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+
+     @* PageList套件  *@
+     @* @foreach (var product in ViewBag.OnePageOfProducts)  *@
+     @* {  *@
+     @*     <tr>  *@
+     @*         <td>  *@
+     @*             @product.Title  *@
+     @*         </td>  *@
+     @*         <td>  *@
+     @*             @product.Credits  *@
+     @*         </td>  *@
+     @*         <td>  *@
+     @*             @product.Department.Name  *@ @* 有些是null會死掉 *@
+     @*         </td>  *@
+     @*         <td>  *@
+     @*             <a asp-action="Edit" asp-route-id="@product.CourseId">Edit</a> |  *@
+        @*             <a asp-action="Details" asp-route-slug="@product.Slug">Details</a> |  *@ @* 套件這邊用ToSlug()會跳例外  *@
+     @*             <a asp-action="Delete" asp-route-id="@product.CourseId">Delete</a>  *@
+     @*         </td>  *@
+     @*     </tr>  *@
+     @* }  *@
+
+    @* 原生 *@
+
+        @foreach (var product in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => product.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => product.Credits)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => product.Department.Name)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => product.StartDate)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@product.CourseId">Edit</a> |
+                <a asp-action="Details" asp-route-slug="@product.Title.ToSlug()">Details</a> |
+                <a asp-action="Delete" asp-route-id="@product.CourseId">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@Html.PagedListPager((IPagedList)ViewBag.OnePageOfProducts, page => Url.Action("Index", new { page }))
+
+@* 這邊是用 PartialView 來呼叫 _ListOfCourseOL.cshtml *@
+@* 方法一 *@
+@* @Html.Partial("_ListOfCourseOL") *@
+@* 方法二 *@
+<partial name="_ListOfCourseOL"/>
+
+@* 用在 RenderSectionAsync，位於 _Layout.cshtml，依據團隊風格放在 頭 or 尾 *@
+@section Footer{
+    <p>This is Footer</p>
+}

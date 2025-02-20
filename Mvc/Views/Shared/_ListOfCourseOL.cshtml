@@ -1,0 +1,14 @@
+﻿ @* This is a partial view that will be used in the Index view of the Course controller. *@
+
+@inject ICourseRepository Repo
+@inject IUnitOfWork Uow
+
+@{
+    Repo.UnitOfWork = Uow;
+    foreach (var course in Repo.All())
+    {
+        <ol>
+            <li>@course.Title</li>
+        </ol>
+    }
+}
